@@ -1,8 +1,8 @@
-# GoLang Project Template
+# Golang Project Template
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-This repository provides a template for creating new GoLang projects. It is designed to serve as a starting point, providing a well-organized structure and some common configurations and dependencies, allowing you to kickstart your GoLang projects more efficiently.
+This repository provides a template for creating new Golang projects. It is designed to serve as a starting point, providing a well-organized structure and some common configurations and dependencies, allowing you to kickstart your Golang projects more efficiently.
 
 ## Features
 
