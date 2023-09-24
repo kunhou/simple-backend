@@ -23,7 +23,7 @@ func NewSettingController(s *setting.SettingUsecase) *SettingController {
 func (d *SettingController) GetSettingByName(ctx *gin.Context) {
 	name := ctx.Param("setting_name")
 	data, err := d.s.GetSettingByName(ctx, name)
-	ginhelper.Response(ctx, err, data)
+	ginhelper.RespondWithError(ctx, err, data)
 }
 
 func (d *SettingController) CreateSetting(ctx *gin.Context) {
@@ -33,7 +33,7 @@ func (d *SettingController) CreateSetting(ctx *gin.Context) {
 	}
 	v, err := setting.Value.MarshalJSON()
 	if err != nil {
-		ginhelper.Response(ctx, err, nil)
+		ginhelper.RespondWithError(ctx, err, nil)
 		return
 	}
 
@@ -42,12 +42,12 @@ func (d *SettingController) CreateSetting(ctx *gin.Context) {
 		Value: &datatypes.JSON{},
 	}
 	if err := s.Value.Scan(v); err != nil {
-		ginhelper.Response(ctx, err, nil)
+		ginhelper.RespondWithError(ctx, err, nil)
 		return
 	}
 
 	data, err := d.s.CreateSetting(ctx, &s)
-	ginhelper.Response(ctx, err, data)
+	ginhelper.RespondWithError(ctx, err, data)
 }
 
 func (d *SettingController) UpdateSetting(ctx *gin.Context) {
@@ -59,7 +59,7 @@ func (d *SettingController) UpdateSetting(ctx *gin.Context) {
 	}
 	v, err := setting.Value.MarshalJSON()
 	if err != nil {
-		ginhelper.Response(ctx, err, nil)
+		ginhelper.RespondWithError(ctx, err, nil)
 		return
 	}
 
@@ -67,16 +67,17 @@ func (d *SettingController) UpdateSetting(ctx *gin.Context) {
 		Value: &datatypes.JSON{},
 	}
 	if err := s.Value.Scan(v); err != nil {
-		ginhelper.Response(ctx, err, nil)
+		ginhelper.RespondWithError(ctx, err, nil)
 		return
 	}
 
 	data, err := d.s.UpdateSettingByName(ctx, name, &s)
-	ginhelper.Response(ctx, err, data)
+	ginhelper.RespondWithError(ctx, err, data)
 }
 
 func (d *SettingController) DeleteSetting(ctx *gin.Context) {
 	name := ctx.Param("setting_name")
 	err := d.s.DeleteSettingByName(ctx, name)
-	ginhelper.Response(ctx, err, nil)
+
+	ginhelper.RespondWithError(ctx, err, nil)
 }
