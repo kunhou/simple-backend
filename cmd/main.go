@@ -7,11 +7,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github/kunhou/simple-backend/deliver/http/server"
 	"github/kunhou/simple-backend/migrations"
 	"github/kunhou/simple-backend/pkg/config"
 	"github/kunhou/simple-backend/pkg/constant"
 	"github/kunhou/simple-backend/pkg/servmanager"
+	"github/kunhou/simple-backend/pkg/servmanager/http"
 )
 
 var (
@@ -56,6 +56,6 @@ func runApp() {
 
 func newApplication(serverConf *config.Server, engine *gin.Engine) *servmanager.Application {
 	return servmanager.NewApp(
-		servmanager.WithServer(server.NewServer(engine, &serverConf.HTTP)),
+		servmanager.WithServer(http.NewServer(engine, &serverConf.HTTP)),
 	)
 }

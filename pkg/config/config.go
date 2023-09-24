@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/viper"
 
-	httpServer "github/kunhou/simple-backend/deliver/http/server"
 	"github/kunhou/simple-backend/pkg/data"
+	http "github/kunhou/simple-backend/pkg/servmanager/http"
 )
 
 type AllConfig struct {
@@ -20,7 +20,7 @@ type Data struct {
 }
 
 type Server struct {
-	HTTP httpServer.Config `mapstructure:",squash"`
+	HTTP http.Config `mapstructure:",squash"`
 }
 
 func ReadConfig() (c *AllConfig, err error) {
