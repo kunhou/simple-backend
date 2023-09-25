@@ -1,6 +1,7 @@
 package grpc
 
 import (
+	"log"
 	"net"
 
 	"google.golang.org/grpc"
@@ -19,7 +20,7 @@ type Server struct {
 type Options func(*Server)
 
 // NewServer creates a new server instance with default settings
-func NewServer(grpcServer *grpc.Server, cfg Config, options ...Options) *Server {
+func NewServer(grpcServer *grpc.Server, cfg *Config, options ...Options) *Server {
 	ser := Server{
 		srv:  grpcServer,
 		addr: cfg.Addr,
@@ -33,6 +34,7 @@ func NewServer(grpcServer *grpc.Server, cfg Config, options ...Options) *Server 
 
 // Start to start the server and listen on the given address
 func (h *Server) Start() (err error) {
+	log.Printf("grpc server listening on %s", h.addr)
 	lis, err := net.Listen("tcp", h.addr)
 	if err != nil {
 		return err

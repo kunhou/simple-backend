@@ -8,6 +8,8 @@ package cmd
 import (
 	"github.com/google/wire"
 
+	grouter "github/kunhou/simple-backend/deliver/grpc/router"
+	gserver "github/kunhou/simple-backend/deliver/grpc/server"
 	"github/kunhou/simple-backend/deliver/http/controller"
 	"github/kunhou/simple-backend/deliver/http/router"
 	"github/kunhou/simple-backend/deliver/http/server"
@@ -25,6 +27,8 @@ func initApplication(
 	dbConf *data.DatabaseConf,
 ) (*servmanager.Application, func(), error) {
 	panic(wire.Build(
+		grouter.ProviderSetRouter,
+		gserver.ProviderSetServer,
 		server.ProviderSetServer,
 		router.ProviderSetRouter,
 		controller.ProviderSetController,

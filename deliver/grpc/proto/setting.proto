@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "deliver/grpc/proto/setting";
+
+import "google/protobuf/timestamp.proto";
+
+message Setting {
+  uint32 id = 1;
+  string name = 2; 
+  bytes value = 3; 
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+
+message CreateSettingReq {
+  string name = 1;
+  bytes value = 2;
+}
+
+message GetSettingReq {
+  string name = 1;
+}
+
+service SettingService {
+  rpc CreateSetting(CreateSettingReq) returns (Setting);
+  rpc GetSettingByName(GetSettingReq) returns (Setting);
+}

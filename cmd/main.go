@@ -6,11 +6,13 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc"
 
 	"github/kunhou/simple-backend/migrations"
 	"github/kunhou/simple-backend/pkg/config"
 	"github/kunhou/simple-backend/pkg/constant"
 	"github/kunhou/simple-backend/pkg/servmanager"
+	gserv "github/kunhou/simple-backend/pkg/servmanager/grpc"
 	"github/kunhou/simple-backend/pkg/servmanager/http"
 )
 
@@ -54,8 +56,9 @@ func runApp() {
 	}
 }
 
-func newApplication(serverConf *config.Server, engine *gin.Engine) *servmanager.Application {
+func newApplication(serverConf *config.Server, engine *gin.Engine, gServer *grpc.Server) *servmanager.Application {
 	return servmanager.NewApp(
 		servmanager.WithServer(http.NewServer(engine, &serverConf.HTTP)),
+		servmanager.WithServer(gserv.NewServer(gServer, &serverConf.GRPC)),
 	)
 }

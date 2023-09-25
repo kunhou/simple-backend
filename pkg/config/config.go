@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github/kunhou/simple-backend/pkg/data"
+	"github/kunhou/simple-backend/pkg/servmanager/grpc"
 	http "github/kunhou/simple-backend/pkg/servmanager/http"
 )
 
@@ -21,6 +22,7 @@ type Data struct {
 
 type Server struct {
 	HTTP http.Config `mapstructure:",squash"`
+	GRPC grpc.Config `mapstructure:",squash"`
 }
 
 func ReadConfig() (c *AllConfig, err error) {

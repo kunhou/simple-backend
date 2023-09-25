@@ -1,6 +1,10 @@
 package errcraft
 
-import "github/kunhou/simple-backend/pkg/reason"
+import (
+	"fmt"
+
+	"github/kunhou/simple-backend/pkg/reason"
+)
 
 // Error is a structured type for holding error details.
 type Error struct {
@@ -18,7 +22,10 @@ func New(status int, reason reason.Reason) *Error {
 
 // Error implements the error interface, returning the error message.
 func (e *Error) Error() string {
-	return e.Message
+	if len(e.Message) == 0 {
+		return string(e.Reason)
+	}
+	return fmt.Sprintf("%s: %s", e.Reason, e.Message)
 }
 
 // SetMessage sets a custom error message and returns the updated Error.
