@@ -69,7 +69,14 @@ func (u *SettingUsecase) UpdateSetting(ctx context.Context, id uint, setting *en
 }
 
 func (u *SettingUsecase) UpdateSettingByName(ctx context.Context, name string, setting *entity.Setting) (*entity.Setting, error) {
-	return u.repo.UpdateSettingByName(ctx, name, setting)
+	setting, err := u.repo.UpdateSettingByName(ctx, name, setting)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errcraft.NotFound(reason.NotFound).SetError(err)
+		}
+		return nil, errcraft.InternalServer(reason.InternalServer).SetError(err)
+	}
+	return setting, nil
 }
 
 func (u *SettingUsecase) DeleteSetting(ctx context.Context, id uint) error {

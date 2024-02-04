@@ -11,38 +11,62 @@ import (
 	"github/kunhou/simple-backend/pkg/reason"
 )
 
+type Context struct {
+	*gin.Context
+}
+
+type RouterGroup struct {
+	*gin.RouterGroup
+}
+
+func newContext(ctx *gin.Context) *Context {
+	return &Context{ctx}
+}
+
+func NewRouterGroup(r *gin.RouterGroup) *RouterGroup {
+	return &RouterGroup{r}
+}
+
+type HandlerFunc func(*Context)
+
+func (ctx *RouterGroup) AddRouter(httpMethod, relativePath string, handler HandlerFunc) {
+	ctx.Handle(httpMethod, relativePath, func(ctx *gin.Context) {
+		handler(newContext(ctx))
+	})
+}
+
 // BindAndCheck attempts to bind the request data and checks for errors.
-func BindAndCheck(ctx *gin.Context, data interface{}) bool {
+func (ctx *Context) BindAndCheck(data interface{}) bool {
 	if err := ctx.ShouldBind(data); err != nil {
 		logError(fmt.Sprintf("Failed to bind data: %s", err.Error()))
-		RespondWithError(ctx, errcraft.New(http.StatusBadRequest, reason.InvalidRequest), nil)
+		ctx.RespondWithError(errcraft.New(http.StatusBadRequest, reason.InvalidRequest), nil)
 		return true
 	}
 	return false
 }
 
 // RespondWithError checks the error and responds appropriately.
-func RespondWithError(ctx *gin.Context, err error, data interface{}) {
+func (ctx *Context) RespondWithError(err error, data interface{}) {
 	if err == nil {
-		respondWithSuccess(ctx, data)
+		ctx.respondWithSuccess(data)
 		return
 	}
 
 	originErr := errcraft.Unwrap(err)
 	if customErr, ok := originErr.(*errcraft.Error); ok {
-		handleCustomError(ctx, customErr, data)
+		ctx.handleCustomError(customErr, data)
 		return
 	}
 
-	logErrorAndRespondWithUnknown(ctx, err)
+	ctx.logErrorAndRespondWithUnknown(err)
 }
 
-func respondWithSuccess(ctx *gin.Context, data interface{}) {
+func (ctx *Context) respondWithSuccess(data interface{}) {
 	response := NewRespBodyData(http.StatusOK, reason.Success, data)
 	ctx.JSON(http.StatusOK, response)
 }
 
-func handleCustomError(ctx *gin.Context, err *errcraft.Error, data interface{}) {
+func (ctx *Context) handleCustomError(err *errcraft.Error, data interface{}) {
 	if errcraft.IsInternalServer(err) {
 		logError(fmt.Sprintf("Internal server error: %s", err.Error()))
 	}
@@ -54,7 +78,7 @@ func handleCustomError(ctx *gin.Context, err *errcraft.Error, data interface{}) 
 	ctx.JSON(err.Code, respBody)
 }
 
-func logErrorAndRespondWithUnknown(ctx *gin.Context, err error) {
+func (ctx *Context) logErrorAndRespondWithUnknown(err error) {
 	logError(fmt.Sprintf("Unknown error: %s", err.Error()))
 	response := NewRespBody(http.StatusInternalServerError, reason.Unknown)
 	ctx.JSON(http.StatusInternalServerError, response)

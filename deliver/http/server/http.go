@@ -5,6 +5,7 @@ import (
 	ginprometheus "github.com/zsais/go-gin-prometheus"
 
 	"github/kunhou/simple-backend/deliver/http/router"
+	"github/kunhou/simple-backend/pkg/ginhelper"
 )
 
 func NewHTTPServer(debug bool, settingRouter *router.SettingRouter) *gin.Engine {
@@ -27,7 +28,7 @@ func NewHTTPServer(debug bool, settingRouter *router.SettingRouter) *gin.Engine 
 	})
 
 	rootGroup := r.Group("")
-	settingRouter.RegisterRouter(rootGroup)
+	settingRouter.RegisterRouter(ginhelper.NewRouterGroup(rootGroup))
 
 	return r
 }

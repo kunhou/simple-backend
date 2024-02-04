@@ -1,7 +1,8 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
+	"net/http"
+
 	"gorm.io/datatypes"
 
 	"github/kunhou/simple-backend/deliver/http/schema"
@@ -20,27 +21,27 @@ func NewSettingRouter(s *setting.SettingUsecase) *SettingRouter {
 	}
 }
 
-func (router *SettingRouter) RegisterRouter(r *gin.RouterGroup) {
-	r.POST("/settings/", router.CreateSetting)
-	r.GET("/settings/:setting_name", router.GetSettingByName)
-	r.PATCH("/settings/:setting_name", router.UpdateSetting)
-	r.DELETE("/settings/:setting_name", router.DeleteSetting)
+func (router *SettingRouter) RegisterRouter(r *ginhelper.RouterGroup) {
+	r.AddRouter(http.MethodPost, "/settings/", router.CreateSetting)
+	r.AddRouter(http.MethodGet, "/settings/:setting_name", router.GetSettingByName)
+	r.AddRouter(http.MethodPatch, "/settings/:setting_name", router.UpdateSetting)
+	r.AddRouter(http.MethodDelete, "/settings/:setting_name", router.DeleteSetting)
 }
 
-func (router *SettingRouter) GetSettingByName(ctx *gin.Context) {
+func (router *SettingRouter) GetSettingByName(ctx *ginhelper.Context) {
 	name := ctx.Param("setting_name")
 	data, err := router.s.GetSettingByName(ctx, name)
-	ginhelper.RespondWithError(ctx, err, data)
+	ctx.RespondWithError(err, data)
 }
 
-func (router *SettingRouter) CreateSetting(ctx *gin.Context) {
+func (router *SettingRouter) CreateSetting(ctx *ginhelper.Context) {
 	var setting schema.CreateSettingReq
-	if ginhelper.BindAndCheck(ctx, &setting) {
+	if ctx.BindAndCheck(&setting) {
 		return
 	}
 	v, err := setting.Value.MarshalJSON()
 	if err != nil {
-		ginhelper.RespondWithError(ctx, err, nil)
+		ctx.RespondWithError(err, nil)
 		return
 	}
 
@@ -49,24 +50,24 @@ func (router *SettingRouter) CreateSetting(ctx *gin.Context) {
 		Value: &datatypes.JSON{},
 	}
 	if err := s.Value.Scan(v); err != nil {
-		ginhelper.RespondWithError(ctx, err, nil)
+		ctx.RespondWithError(err, nil)
 		return
 	}
 
 	data, err := router.s.CreateSetting(ctx, &s)
-	ginhelper.RespondWithError(ctx, err, data)
+	ctx.RespondWithError(err, data)
 }
 
-func (router *SettingRouter) UpdateSetting(ctx *gin.Context) {
+func (router *SettingRouter) UpdateSetting(ctx *ginhelper.Context) {
 	name := ctx.Param("setting_name")
 
 	var setting schema.UpdateSettingReq
-	if ginhelper.BindAndCheck(ctx, &setting) {
+	if ctx.BindAndCheck(&setting) {
 		return
 	}
 	v, err := setting.Value.MarshalJSON()
 	if err != nil {
-		ginhelper.RespondWithError(ctx, err, nil)
+		ctx.RespondWithError(err, nil)
 		return
 	}
 
@@ -74,17 +75,17 @@ func (router *SettingRouter) UpdateSetting(ctx *gin.Context) {
 		Value: &datatypes.JSON{},
 	}
 	if err := s.Value.Scan(v); err != nil {
-		ginhelper.RespondWithError(ctx, err, nil)
+		ctx.RespondWithError(err, nil)
 		return
 	}
 
 	data, err := router.s.UpdateSettingByName(ctx, name, &s)
-	ginhelper.RespondWithError(ctx, err, data)
+	ctx.RespondWithError(err, data)
 }
 
-func (router *SettingRouter) DeleteSetting(ctx *gin.Context) {
+func (router *SettingRouter) DeleteSetting(ctx *ginhelper.Context) {
 	name := ctx.Param("setting_name")
 	err := router.s.DeleteSettingByName(ctx, name)
 
-	ginhelper.RespondWithError(ctx, err, nil)
+	ctx.RespondWithError(err, nil)
 }

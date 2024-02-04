@@ -54,9 +54,14 @@ func (r *SettingRepo) UpdateSetting(ctx context.Context, id uint, setting *entit
 }
 
 func (r *SettingRepo) UpdateSettingByName(ctx context.Context, name string, setting *entity.Setting) (*entity.Setting, error) {
-	if err := r.db.WithContext(ctx).Model(&entity.Setting{}).Where("name = ?", name).Updates(setting).Error; err != nil {
+	res := r.db.WithContext(ctx).Model(&entity.Setting{}).Where("name = ?", name).Updates(setting)
+	if err := res.Error; err != nil {
 		return nil, err
 	}
+	if res.RowsAffected == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+
 	return setting, nil
 }
 
