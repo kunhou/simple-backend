@@ -35,7 +35,7 @@ func NewApp(ops ...Option) *Application {
 // WithServer application add server
 func WithServer(servers ...Server) func(application *Application) {
 	return func(application *Application) {
-		application.servers = servers
+		application.servers = append(application.servers, servers...)
 	}
 }
 
