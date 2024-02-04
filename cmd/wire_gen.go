@@ -9,7 +9,6 @@ package cmd
 import (
 	router2 "github/kunhou/simple-backend/deliver/grpc/router"
 	server2 "github/kunhou/simple-backend/deliver/grpc/server"
-	"github/kunhou/simple-backend/deliver/http/controller"
 	"github/kunhou/simple-backend/deliver/http/router"
 	"github/kunhou/simple-backend/deliver/http/server"
 	"github/kunhou/simple-backend/pkg/config"
@@ -26,8 +25,7 @@ func initApplication(debug bool, serverConf *config.Server, dbConf *data.Databas
 	db := data.NewDB(debug, dbConf)
 	iSettingRepository := setting.NewSettingRepo(db)
 	settingUsecase := setting2.NewSettingUsecase(iSettingRepository)
-	settingController := controller.NewSettingController(settingUsecase)
-	settingRouter := router.NewSettingRouter(settingController)
+	settingRouter := router.NewSettingRouter(settingUsecase)
 	engine := server.NewHTTPServer(debug, settingRouter)
 	routerSettingRouter := router2.NewSettingRouter(settingUsecase)
 	grpcServer := server2.NewGRPCServer(debug, routerSettingRouter)

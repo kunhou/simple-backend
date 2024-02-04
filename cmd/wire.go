@@ -10,7 +10,6 @@ import (
 
 	grouter "github/kunhou/simple-backend/deliver/grpc/router"
 	gserver "github/kunhou/simple-backend/deliver/grpc/server"
-	"github/kunhou/simple-backend/deliver/http/controller"
 	"github/kunhou/simple-backend/deliver/http/router"
 	"github/kunhou/simple-backend/deliver/http/server"
 	"github/kunhou/simple-backend/pkg/config"
@@ -31,7 +30,6 @@ func initApplication(
 		gserver.ProviderSetServer,
 		server.ProviderSetServer,
 		router.ProviderSetRouter,
-		controller.ProviderSetController,
 		usecase.ProviderSetUsecase,
 		repository.ProviderSetRepository,
 		newApplication,
