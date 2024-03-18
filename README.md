@@ -1,6 +1,6 @@
 # Golang Project Template
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![test](https://github.com/kunhou/simple-backend/actions/workflows/test.yml/badge.svg)](https://github.com/kunhou/simple-backend/blob/master/.github/workflows/test.yml)
 
 This repository provides a template for creating new Golang projects. It is designed to serve as a starting point, providing a well-organized structure and some common configurations and dependencies, allowing you to kickstart your Golang projects more efficiently.
 
